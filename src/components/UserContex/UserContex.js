@@ -2,10 +2,10 @@ import React, { createContext, useEffect, useState } from 'react';
 import { createUserWithEmailAndPassword, getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut } from 'firebase/auth'
 import app from '../Firebase/Firebase.config';
 
-const AuthContex = createContext([]);
+export const AuthContex = createContext([]);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
-const UseContex = ({ children }) => {
+const UserContex = ({ children }) => {
     const [user, setUser] = useState({ name: 'naim', email: 'naimka@gmail.com' });
 
 
@@ -39,4 +39,4 @@ const UseContex = ({ children }) => {
     );
 };
 
-export default UseContex;
+export default UserContex;

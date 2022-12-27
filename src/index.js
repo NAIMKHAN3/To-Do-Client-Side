@@ -3,15 +3,14 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import UseContex from './components/UseContex/UseContex';
+import UserContex from './components/UserContex/UserContex';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <UseContex>
+    <UserContex>
       <App />
-    </UseContex>
-
+    </UserContex>
   </React.StrictMode>
 );
 

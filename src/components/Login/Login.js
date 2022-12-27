@@ -1,7 +1,27 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { AuthContex } from '../UserContex/UserContex';
 
 const Login = () => {
+    const { logIn, signGoogle } = useContext(AuthContex);
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const email = form.email.value;
+        const password = form.password.value;
+        logIn(email, password)
+            .then(result => console.log(result.user))
+            .catch(e => console.log(e))
+
+    }
+
+    const signInGoogle = () => {
+        signGoogle()
+            .then(result => console.log(result.user))
+            .catch(e => console.log(e))
+    }
+
     return (
         <div>
             <section class="bg-white">
@@ -24,7 +44,7 @@ const Login = () => {
                             <h2 class="text-3xl font-bold leading-tight text-black sm:text-4xl">Sign in to Celebration</h2>
                             <p class="mt-2 text-base text-gray-600">Don't have an account? <Link to='/register' title="" class="font-medium text-blue-600 transition-all duration-200 hover:text-blue-700 focus:text-blue-700 hover:underline">Create a free account</Link></p>
 
-                            <form action="#" method="POST" class="mt-8">
+                            <form onSubmit={handleSubmit} class="mt-8">
                                 <div class="space-y-5">
                                     <div>
                                         <label for="" class="text-base font-medium text-gray-900"> Email address </label>
@@ -37,8 +57,7 @@ const Login = () => {
 
                                             <input
                                                 type="email"
-                                                name=""
-                                                id=""
+                                                name="email"
                                                 placeholder="Enter email to get started"
                                                 class="block w-full py-4 pl-10 pr-4 text-black placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
                                             />
@@ -65,8 +84,7 @@ const Login = () => {
 
                                             <input
                                                 type="password"
-                                                name=""
-                                                id=""
+                                                name="password"
                                                 placeholder="Enter your password"
                                                 class="block w-full py-4 pl-10 pr-4 text-black placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
                                             />
@@ -86,6 +104,7 @@ const Login = () => {
 
                             <div class="mt-3 space-y-3">
                                 <button
+                                    onClick={signInGoogle}
                                     type="button"
                                     class="relative inline-flex items-center justify-center w-full px-4 py-4 text-base font-semibold text-gray-700 transition-all duration-200 bg-white border-2 border-gray-200 rounded-md hover:bg-gray-100 focus:bg-gray-100 hover:text-black focus:text-black focus:outline-none"
                                 >
