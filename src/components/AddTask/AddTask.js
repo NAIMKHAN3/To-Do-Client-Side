@@ -1,18 +1,19 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { AuthContex } from '../UserContex/UserContex';
 
 const AddTask = () => {
 
+    const { user } = useContext(AuthContex);
+    console.log(user.email)
+
     const imgbbKey = process.env.REACT_APP_IMGBB_KEY;
-    console.log(imgbbKey)
     const handleTask = (e) => {
         e.preventDefault();
         const form = e.target;
         const taskName = form.taskname.value;
-        const description = form.description;
-        const image = e;
+        const description = form.description.value;
+        const image = e.target.image.files[0];
         const formData = new FormData();
-        console.log(image)
-        console.log(formData)
         formData.append('image', image)
 
         fetch(`https://api.imgbb.com/1/upload?key=${imgbbKey}`, {
@@ -23,7 +24,25 @@ const AddTask = () => {
             .then(data => {
                 const imageLink = data.data?.url;
                 console.log(imageLink)
+                const email = user?.email;
+                const task = { taskName, description, imageLink, email }
+                console.log(task)
+
+
+                fetch('http://localhost:5000/addtask', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(task)
+                })
+                    .then(res => res.json())
+                    .then(data => console.log(data))
+                    .catch(e => console.log(e))
+
+
             })
+            .catch(e => console.log(e))
 
     }
     return (

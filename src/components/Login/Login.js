@@ -18,7 +18,23 @@ const Login = () => {
 
     const signInGoogle = () => {
         signGoogle()
-            .then(result => console.log(result.user))
+            .then(result => {
+
+                const name = result?.user?.displayName;
+                const email = result?.user?.email;
+                const user = { name, email }
+
+                fetch('http://localhost:5000/adduser', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(user)
+                })
+                    .then(res => res.json())
+                    .then(data => console.log(data))
+                    .catch(e => console.log(e))
+            })
             .catch(e => console.log(e))
     }
 
