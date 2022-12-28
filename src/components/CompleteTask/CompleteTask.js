@@ -5,6 +5,7 @@ const CompleteTask = () => {
     const { user } = useContext(AuthContex)
 
     const [tasks, setTasks] = useState([]);
+    const [state, setState] = useState(true)
     useEffect(() => {
         fetch(`http://localhost:5000/ctask?email=${user.email}`)
             .then(res => res.json())
@@ -13,15 +14,15 @@ const CompleteTask = () => {
                 console.log(data)
             })
             .catch(e => console.log(e))
-    }, [user.email])
+    }, [user.email, state])
 
-    const handledelete = id => {
-        fetch(`http://localhost:5000/deletetask?id=${id}`, {
+    const handleDelete = id => {
+        fetch(`http://localhost:5000/deletectask?id=${id}`, {
             method: 'DELETE'
         })
             .then(res => res.json())
             .then(data => {
-                setTasks(data)
+                setState(!state)
                 console.log(data)
             })
             .catch(e => console.log(e))
@@ -35,14 +36,13 @@ const CompleteTask = () => {
                             <th></th>
                             <th>Task Name</th>
                             <th>Task Image</th>
-                            <th>Update</th>
-                            <th>Complete</th>
+                            <th>Not Complete</th>
                             <th>Delete</th>
                         </tr>
                     </thead>
                     <tbody>
                         {
-                            tasks.map((task, i) => <tr>
+                            tasks.map((task, i) => <tr key={task._id}>
                                 <th>{i + 1}</th>
                                 <td>{task.taskName}</td>
                                 <td> <img className='w-[100px]' src={task.imageLink} alt="" /></td>
@@ -50,16 +50,10 @@ const CompleteTask = () => {
                                     type="submit"
                                     class="inline-flex items-center justify-center px-4 py-2 text-base font-semibold text-white transition-all duration-200 border border-transparent rounded-md bg-gradient-to-r from-fuchsia-600 to-blue-600 focus:outline-none hover:opacity-80 focus:opacity-80"
                                 >
-                                    Update
+                                    Not Complete
                                 </button></td>
                                 <td><button
-                                    onClick={() => handledelete(task)}
-                                    type="submit"
-                                    class="inline-flex items-center justify-center px-4 py-2 text-base font-semibold text-white transition-all duration-200 border border-transparent rounded-md bg-gradient-to-r from-fuchsia-600 to-blue-600 focus:outline-none hover:opacity-80 focus:opacity-80"
-                                >
-                                    Complete
-                                </button></td>
-                                <td><button
+                                    onClick={() => handleDelete(task._id)}
                                     type="submit"
                                     class="inline-flex items-center justify-center px-4 py-2 text-base font-semibold text-white transition-all duration-200 border border-transparent rounded-md bg-gradient-to-r from-fuchsia-600 to-blue-600 focus:outline-none hover:opacity-80 focus:opacity-80"
                                 >

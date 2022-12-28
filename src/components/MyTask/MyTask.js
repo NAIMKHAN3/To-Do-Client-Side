@@ -5,6 +5,8 @@ const MyTask = () => {
     const { user } = useContext(AuthContex);
     const [state, setState] = useState(true)
 
+    const [deleteState, setDeleteState] = useState(true)
+
     const [tasks, setTasks] = useState([])
 
     useEffect(() => {
@@ -15,7 +17,7 @@ const MyTask = () => {
                 console.log(data)
             })
             .catch(e => console.log(e))
-    }, [user.email, state])
+    }, [user.email, state, deleteState])
 
     const handleComplete = (task) => {
         fetch('http://localhost:5000/completetask', {
@@ -28,6 +30,18 @@ const MyTask = () => {
             .then(res => res.json())
             .then(data => {
                 setState(!state)
+                console.log(data)
+            })
+            .catch(e => console.log(e))
+    }
+
+    const handleDelete = id => {
+        fetch(`http://localhost:5000/deletetask?id=${id}`, {
+            method: 'DELETE'
+        })
+            .then(res => res.json())
+            .then(data => {
+                setDeleteState(!state)
                 console.log(data)
             })
             .catch(e => console.log(e))
@@ -68,6 +82,7 @@ const MyTask = () => {
                                     Complete
                                 </button></td>
                                 <td><button
+                                    onClick={() => handleDelete(task._id)}
                                     type="submit"
                                     class="inline-flex items-center justify-center px-4 py-2 text-base font-semibold text-white transition-all duration-200 border border-transparent rounded-md bg-gradient-to-r from-fuchsia-600 to-blue-600 focus:outline-none hover:opacity-80 focus:opacity-80"
                                 >
