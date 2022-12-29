@@ -1,4 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { toast } from 'react-hot-toast';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { AuthContex } from '../UserContex/UserContex';
 
 const CompleteTask = () => {
@@ -6,27 +8,45 @@ const CompleteTask = () => {
 
     const [tasks, setTasks] = useState([]);
     const [state, setState] = useState(true)
+    const navigate = useNavigate();
     useEffect(() => {
-        fetch(`http://localhost:5000/ctask?email=${user.email}`)
+        fetch(`https://to-do-server-eight.vercel.app/ctask?email=${user.email}`)
             .then(res => res.json())
             .then(data => {
                 setTasks(data)
-                console.log(data)
             })
             .catch(e => console.log(e))
     }, [user.email, state])
 
     const handleDelete = id => {
-        fetch(`http://localhost:5000/deletectask?id=${id}`, {
+        fetch(`https://to-do-server-eight.vercel.app/deletectask?id=${id}`, {
             method: 'DELETE'
         })
             .then(res => res.json())
             .then(data => {
                 setState(!state)
-                console.log(data)
+                toast.success('Deleted Task')
             })
             .catch(e => console.log(e))
     }
+    const handleNcomplete = nTask => {
+
+        fetch('https://to-do-server-eight.vercel.app/nComplete', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(nTask)
+        })
+            .then(res => res.json())
+            .then(data => {
+                setState(!state)
+                toast.success('Not Complete Task')
+                navigate('/mytask')
+            })
+            .catch(e => console.log(e))
+    }
+
     return (
         <div>
             <div className="overflow-x-auto">
@@ -47,6 +67,7 @@ const CompleteTask = () => {
                                 <td>{task.taskName}</td>
                                 <td> <img className='w-[100px]' src={task.imageLink} alt="" /></td>
                                 <td><button
+                                    onClick={() => handleNcomplete(task)}
                                     type="submit"
                                     class="inline-flex items-center justify-center px-4 py-2 text-base font-semibold text-white transition-all duration-200 border border-transparent rounded-md bg-gradient-to-r from-fuchsia-600 to-blue-600 focus:outline-none hover:opacity-80 focus:opacity-80"
                                 >

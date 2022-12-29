@@ -6,20 +6,24 @@ export const AuthContex = createContext([]);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 const UserContex = ({ children }) => {
-    const [user, setUser] = useState({ name: 'naim', email: 'naimka@gmail.com' });
+    const [user, setUser] = useState({});
+    const [loading, setLoading] = useState(true)
 
 
     useEffect(() => {
         onAuthStateChanged(auth, currentUser => {
+            setLoading(false)
             setUser(currentUser);
         })
     }, [])
 
     const signGoogle = () => {
+        setLoading(false)
         return signInWithPopup(auth, provider);
     }
 
     const signUp = (email, password) => {
+        setLoading(false)
         return createUserWithEmailAndPassword(auth, email, password)
     }
 
@@ -28,6 +32,7 @@ const UserContex = ({ children }) => {
     }
 
     const logOut = () => {
+        setLoading(false)
         return signOut(auth);
     }
 

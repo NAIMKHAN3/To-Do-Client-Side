@@ -1,4 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { toast } from 'react-hot-toast';
+import { Link, useNavigate } from 'react-router-dom';
 import { AuthContex } from '../UserContex/UserContex';
 
 const MyTask = () => {
@@ -8,19 +10,19 @@ const MyTask = () => {
     const [deleteState, setDeleteState] = useState(true)
 
     const [tasks, setTasks] = useState([])
+    const navigate = useNavigate();
 
     useEffect(() => {
-        fetch(`http://localhost:5000/mytask?email=${user.email}`)
+        fetch(`https://to-do-server-eight.vercel.app/mytask?email=${user.email}`)
             .then(res => res.json())
             .then(data => {
                 setTasks(data)
-                console.log(data)
             })
             .catch(e => console.log(e))
     }, [user.email, state, deleteState])
 
     const handleComplete = (task) => {
-        fetch('http://localhost:5000/completetask', {
+        fetch('https://to-do-server-eight.vercel.app/completetask', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -30,19 +32,20 @@ const MyTask = () => {
             .then(res => res.json())
             .then(data => {
                 setState(!state)
-                console.log(data)
+                toast.success('Complete Task')
+                navigate('/completetask')
             })
             .catch(e => console.log(e))
     }
 
     const handleDelete = id => {
-        fetch(`http://localhost:5000/deletetask?id=${id}`, {
+        fetch(`https://to-do-server-eight.vercel.app/deletetask?id=${id}`, {
             method: 'DELETE'
         })
             .then(res => res.json())
             .then(data => {
                 setDeleteState(!state)
-                console.log(data)
+                toast.success('Deleted Task')
             })
             .catch(e => console.log(e))
     }
@@ -68,12 +71,14 @@ const MyTask = () => {
                                 <th>{i + 1}</th>
                                 <td>{task.taskName}</td>
                                 <td> <img className='w-[100px]' src={task.imageLink} alt="" /></td>
-                                <td><button
-                                    type="submit"
-                                    class="inline-flex items-center justify-center px-4 py-2 text-base font-semibold text-white transition-all duration-200 border border-transparent rounded-md bg-gradient-to-r from-fuchsia-600 to-blue-600 focus:outline-none hover:opacity-80 focus:opacity-80"
-                                >
-                                    Update
-                                </button></td>
+                                <td><Link to={`/utask/${task._id}`}>
+                                    <button
+                                        type="submit"
+                                        class="inline-flex items-center justify-center px-4 py-2 text-base font-semibold text-white transition-all duration-200 border border-transparent rounded-md bg-gradient-to-r from-fuchsia-600 to-blue-600 focus:outline-none hover:opacity-80 focus:opacity-80"
+                                    >
+                                        Update
+                                    </button>
+                                </Link></td>
                                 <td><button
                                     onClick={() => handleComplete(task)}
                                     type="submit"

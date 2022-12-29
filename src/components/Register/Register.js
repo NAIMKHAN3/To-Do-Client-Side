@@ -1,10 +1,12 @@
 import { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
+import { Link, useNavigate } from 'react-router-dom';
 import { AuthContex } from '../UserContex/UserContex';
 
 
 const Register = () => {
     const { signGoogle, signUp } = useContext(AuthContex);
+    const navigate = useNavigate('/addtask')
 
 
     const handleSubmit = (e) => {
@@ -16,7 +18,8 @@ const Register = () => {
         const user = { name, email };
         signUp(email, password)
             .then(result => {
-                fetch('http://localhost:5000/adduser', {
+                toast.success('Sign Up successfully')
+                fetch('https://to-do-server-eight.vercel.app/adduser', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -24,10 +27,19 @@ const Register = () => {
                     body: JSON.stringify(user)
                 })
                     .then(res => res.json())
-                    .then(data => console.log(data))
-                    .catch(e => console.log(e))
+                    .then(data => {
+                        navigate('/addtask')
+                    })
+                    .catch(e => {
+                        toast.error(e)
+                        console.log(e)
+                    })
             })
-            .catch(e => console.log(e))
+
+            .catch(e => {
+                toast.error(e)
+                console.log(e)
+            })
 
     }
 
@@ -38,8 +50,9 @@ const Register = () => {
                 const name = result?.user?.displayName;
                 const email = result?.user?.email;
                 const user = { name, email }
+                toast.success('Sign Up successfully')
 
-                fetch('http://localhost:5000/adduser', {
+                fetch('https://to-do-server-eight.vercel.app/adduser', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -47,7 +60,9 @@ const Register = () => {
                     body: JSON.stringify(user)
                 })
                     .then(res => res.json())
-                    .then(data => console.log(data))
+                    .then(data => {
+                        navigate('/addtask')
+                    })
                     .catch(e => console.log(e))
             })
             .catch(e => console.log(e))

@@ -1,19 +1,20 @@
 import React, { useContext } from 'react';
 import { toast } from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
+import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
 import { AuthContex } from '../UserContex/UserContex';
 
-const AddTask = () => {
+const UpdateTask = () => {
 
     const { user } = useContext(AuthContex);
+
+    const task = useLoaderData();
+    const id = task._id;
     const navigate = useNavigate();
 
     const imgbbKey = process.env.REACT_APP_IMGBB_KEY;
+
     const handleTask = (e) => {
         e.preventDefault();
-        if (!user?.uid) {
-            return navigate('/login')
-        }
         const form = e.target;
         const taskName = form.taskname.value;
         const description = form.description.value;
@@ -29,12 +30,10 @@ const AddTask = () => {
             .then(data => {
                 const imageLink = data.data?.url;
                 const email = user?.email;
-                const task = { taskName, description, imageLink, email }
+                const task = { taskName, description, imageLink, email, id }
 
-
-
-                fetch('https://to-do-server-eight.vercel.app/addtask', {
-                    method: 'POST',
+                fetch(`https://to-do-server-eight.vercel.app/updatetask`, {
+                    method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
                     },
@@ -42,7 +41,7 @@ const AddTask = () => {
                 })
                     .then(res => res.json())
                     .then(data => {
-                        toast.success('Task Added')
+                        toast.success('Task Update')
                         navigate('/mytask')
                     })
                     .catch(e => {
@@ -57,6 +56,7 @@ const AddTask = () => {
                 console.log(e)
             })
 
+
     }
     return (
         <div className='lg:w-1/3 border border-orange-400 mx-auto p-10 m-3'>
@@ -69,6 +69,7 @@ const AddTask = () => {
                     <input
                         type="text"
                         name="taskname"
+                        defaultValue={task.taskName}
                         placeholder="Enter your task name"
                         class="block w-full py-4 pl-10 pr-4 text-black placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
                         required
@@ -81,6 +82,7 @@ const AddTask = () => {
                     <input
                         type="text"
                         name="description"
+                        defaultValue={task.description}
                         placeholder="Enter your task description"
                         class="block w-full py-4 pl-10 pr-4 text-black placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
                         required
@@ -105,4 +107,4 @@ const AddTask = () => {
     );
 };
 
-export default AddTask;
+export default UpdateTask;

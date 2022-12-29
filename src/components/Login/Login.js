@@ -1,9 +1,11 @@
 import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
+import { Link, useNavigate } from 'react-router-dom';
 import { AuthContex } from '../UserContex/UserContex';
 
 const Login = () => {
     const { logIn, signGoogle } = useContext(AuthContex);
+    const navigate = useNavigate();
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -11,8 +13,14 @@ const Login = () => {
         const email = form.email.value;
         const password = form.password.value;
         logIn(email, password)
-            .then(result => console.log(result.user))
-            .catch(e => console.log(e))
+            .then(result => {
+                toast.success('Log In successfully')
+                navigate('/addtask')
+            })
+            .catch(e => {
+                toast.error(e.message)
+                console.log(e)
+            })
 
     }
 
@@ -23,8 +31,9 @@ const Login = () => {
                 const name = result?.user?.displayName;
                 const email = result?.user?.email;
                 const user = { name, email }
+                toast.success('Log In successfully')
 
-                fetch('http://localhost:5000/adduser', {
+                fetch('https://to-do-server-eight.vercel.app/adduser', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -32,7 +41,10 @@ const Login = () => {
                     body: JSON.stringify(user)
                 })
                     .then(res => res.json())
-                    .then(data => console.log(data))
+                    .then(data => {
+
+                        navigate('/addtask')
+                    })
                     .catch(e => console.log(e))
             })
             .catch(e => console.log(e))
@@ -76,6 +88,7 @@ const Login = () => {
                                                 name="email"
                                                 placeholder="Enter email to get started"
                                                 class="block w-full py-4 pl-10 pr-4 text-black placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
+                                                required
                                             />
                                         </div>
                                     </div>
@@ -103,6 +116,7 @@ const Login = () => {
                                                 name="password"
                                                 placeholder="Enter your password"
                                                 class="block w-full py-4 pl-10 pr-4 text-black placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
+                                                required
                                             />
                                         </div>
                                     </div>
